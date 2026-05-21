@@ -24,6 +24,11 @@ public class gatewayConfig {
                         r -> r.path("/api/ai/**")
                                 .uri("lb://AIService")
                 )
+                .route(
+                        "ai-service",
+                        r -> r.path("/api/companies/**")
+                                .uri("lb://CompanyService")
+                )
 
                 .build();
     }

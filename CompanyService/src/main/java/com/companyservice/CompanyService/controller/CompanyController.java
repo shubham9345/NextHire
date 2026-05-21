@@ -16,30 +16,29 @@ public class CompanyController {
 
     private final CompanyService companyService;
 
-    @PutMapping("/profile")
+    @PostMapping("/profile/{authUserId}")
     public CompanyResponseDto updateProfile(
 
-            @RequestHeader("X-User-Id")
-            UUID authUserId,
+            @PathVariable UUID authUserId,
 
-            @RequestBody
-            UpdateCompanyProfileRequest request
+            @RequestBody UpdateCompanyProfileRequest request
     ) {
 
-        return companyService.updateProfile(
+        return companyService.createProfile(
                 authUserId,
                 request
         );
     }
-    @DeleteMapping("/profile")
+
+    @DeleteMapping("/profile/{companyId}")
     public ResponseEntity<String> deleteCompany(
 
-            @RequestHeader("X-User-Id")
-            UUID authUserId
+            @PathVariable
+            UUID companyId
     ) {
 
         companyService.deleteCompany(
-                authUserId
+                companyId
         );
 
         return ResponseEntity.ok(
@@ -47,15 +46,15 @@ public class CompanyController {
         );
     }
 
-    @GetMapping("/profile")
+    @GetMapping("/profile/{companyId}")
     public CompanyResponseDto getProfile(
 
-            @RequestHeader("X-User-Id")
-            UUID authUserId
+            @PathVariable
+            UUID companyId
     ) {
 
         return companyService.getProfile(
-                authUserId
+                companyId
         );
     }
 }

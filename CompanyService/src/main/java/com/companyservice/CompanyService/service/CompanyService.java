@@ -17,25 +17,16 @@ public class CompanyService {
 
     private final CompanyRepository companyRepository;
 
-    public CompanyResponseDto updateProfile(
+    public CompanyResponseDto createProfile(
 
             UUID authUserId,
 
             UpdateCompanyProfileRequest request
     ) {
 
-        Company company =
-                companyRepository
-                        .findByAuthUserIdAndDeletedFalse(
-                                authUserId
-                        )
-                        .orElseThrow(() ->
-                                new RuntimeException(
-                                        "Company not found"
-                                )
-                        );
+        Company company = new Company();
 
-        // UPDATE FIELDS
+        company.setAuthUserId(authUserId);
 
         company.setCompanyName(
                 request.getCompanyName()
@@ -61,16 +52,17 @@ public class CompanyService {
                 request.getLogoUrl()
         );
 
-        Company updatedCompany =
+        Company savedCompany =
                 companyRepository.save(company);
 
         log.info(
-                "Company profile updated for {}",
+                "Company profile created for {}",
                 authUserId
         );
 
-        return mapToDto(updatedCompany);
+        return mapToDto(savedCompany);
     }
+
 
     private CompanyResponseDto mapToDto(
             Company company
@@ -106,13 +98,13 @@ public class CompanyService {
     }
 
     public void deleteCompany(
-            UUID authUserId
+            UUID companyId
     ) {
 
         Company company =
                 companyRepository
-                        .findByAuthUserIdAndDeletedFalse(
-                                authUserId
+                        .findByIdAndDeletedFalse(
+                                companyId
                         )
                         .orElseThrow(() ->
                                 new RuntimeException(
@@ -126,18 +118,18 @@ public class CompanyService {
 
         log.info(
                 "Company deleted successfully {}",
-                authUserId
+                companyId
         );
     }
 
     public CompanyResponseDto getProfile(
-            UUID authUserId
+            UUID companyId
     ) {
 
         Company company =
                 companyRepository
-                        .findByAuthUserIdAndDeletedFalse(
-                                authUserId
+                        .findByIdAndDeletedFalse(
+                                companyId
                         )
                         .orElseThrow(() ->
                                 new RuntimeException(
