@@ -12,4 +12,5 @@ public interface CompanyRepository
     Optional<Company> findByIdAndDeletedFalse(
             UUID companyId
     );
+    Optional<Company> findByAuthUserIdAndDeletedFalse(UUID authUserId);
 }

@@ -2,13 +2,18 @@ package com.companyservice.CompanyService.controller;
 
 import com.companyservice.CompanyService.dto.CreateJobRequest;
 import com.companyservice.CompanyService.dto.JobResponseDto;
-import com.companyservice.CompanyService.dto.UpdateJobApplicationsRequest;
+import com.companyservice.CompanyService.dto.JobSearchFilterRequest;
+import com.companyservice.CompanyService.dto.JobApplicationsRequest;
+import com.companyservice.CompanyService.service.JobSearchService;
 import com.companyservice.CompanyService.service.JobService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @RestController
@@ -17,6 +22,7 @@ import java.util.UUID;
 public class JobController {
 
     private final JobService jobService;
+    private final JobSearchService jobSearchService;
 
     @PostMapping("/job/{companyId}")
     public JobResponseDto createJob(
@@ -67,12 +73,46 @@ public class JobController {
     @PatchMapping("/{jobId}/applications")
     public JobResponseDto updateAppliedCandidates(
             @PathVariable UUID jobId,
-            @Valid @RequestBody UpdateJobApplicationsRequest request
+            @Valid @RequestBody JobApplicationsRequest request
     ) {
 
         return jobService.updateAppliedCandidates(
                 jobId,
                 request
         );
+    }
+    @GetMapping("/company/{companyId}")
+    public ResponseEntity<Page<JobResponseDto>> getJobsByCompany(
+            @PathVariable UUID companyId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Page<JobResponseDto> response = jobService.getJobsByCompany(companyId, page, size);
+        return ResponseEntity.ok(response);
+    }
+
+
+    @GetMapping("/search")
+    public ResponseEntity<Page<JobResponseDto>> searchJobs(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String location,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime postedFrom,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime postedTo,
+            @RequestParam(required = false) String jobType,
+            @RequestParam(required = false) String experienceLevel,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        JobSearchFilterRequest filter = new JobSearchFilterRequest();
+        filter.setTitle(title);
+        filter.setLocation(location);
+        filter.setPostedFrom(postedFrom);
+        filter.setPostedTo(postedTo);
+        filter.setJobType(jobType);
+        filter.setExperienceLevel(experienceLevel);
+        filter.setPage(page);
+        filter.setSize(size);
+
+        return ResponseEntity.ok(jobSearchService.searchJobs(filter));
     }
 }

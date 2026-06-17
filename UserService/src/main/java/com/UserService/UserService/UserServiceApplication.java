@@ -6,8 +6,8 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.EnableCaching;
 
 @SpringBootApplication
-@EnableCaching
-@Cacheable
+//@EnableCaching
+//@Cacheable
 public class UserServiceApplication {
 
 	public static void main(String[] args) {

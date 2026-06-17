@@ -1,12 +1,13 @@
 package com.companyservice.CompanyService.service;
 
 import com.companyservice.CompanyService.dto.CompanyResponseDto;
-import com.companyservice.CompanyService.dto.UpdateCompanyProfileRequest;
+import com.companyservice.CompanyService.dto.companyProfileRequest;
 import com.companyservice.CompanyService.entity.Company;
 import com.companyservice.CompanyService.repository.CompanyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -22,7 +23,7 @@ public class CompanyService {
 
             UUID authUserId,
 
-            UpdateCompanyProfileRequest request
+            companyProfileRequest request
     ) {
 
         Company company = new Company();
@@ -141,4 +142,31 @@ public class CompanyService {
 
         return mapToDto(company);
     }
+    public CompanyResponseDto updateProfile(UUID authUserId, companyProfileRequest request) {
+        Company company = companyRepository.findByAuthUserIdAndDeletedFalse(authUserId)
+                .orElseThrow(() -> new RuntimeException("Company not found"));
+
+        if (StringUtils.hasText(request.getCompanyName())) {
+            company.setCompanyName(request.getCompanyName());
+        }
+        if (StringUtils.hasText(request.getWebsite())) {
+            company.setWebsite(request.getWebsite());
+        }
+        if (StringUtils.hasText(request.getIndustry())) {
+            company.setIndustry(request.getIndustry());
+        }
+        if (StringUtils.hasText(request.getDescription())) {
+            company.setDescription(request.getDescription());
+        }
+        if (StringUtils.hasText(request.getLocation())) {
+            company.setLocation(request.getLocation());
+        }
+        if (StringUtils.hasText(request.getLogoUrl())) {
+            company.setLogoUrl(request.getLogoUrl());
+        }
+
+        Company updated = companyRepository.save(company);
+        return mapToDto(updated);
+    }
+
 }

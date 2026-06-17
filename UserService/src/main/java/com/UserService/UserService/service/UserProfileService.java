@@ -34,15 +34,18 @@ public class UserProfileService {
                 .location(request.getLocation())
                 .yearsOfExperience(request.getYearsOfExperience())
                 .skills(request.getSkills())
+                .linkedinUrl(request.getLinkedinUrl())
+                .dateOfBirth(request.getDateOfBirth())
+                .githubUrl(request.getGithubUrl())
                 .build();
 
         return repository.save(profile);
     }
 
-    @CacheEvict(
-            value = "profiles",
-            key = "#profileId"
-    )
+//    @CacheEvict(
+//            value = "profiles",
+//            key = "#profileId"
+//    )
     public void updateResume(
             UUID profileId,
             String resumePath
@@ -64,23 +67,14 @@ public class UserProfileService {
                 profileId
         );
     }
-    @Cacheable(
-            value = "profiles",
-            key = "#profileId"
-    )
-    public UserProfile getProfile(
-            UUID profileId
-    ) {
+//    @Cacheable(
+//            value = "profiles",
+//            key = "#authUserId"
+//    )
+    public UserProfile getProfile(UUID authUserId) {
 
-        log.info(
-                "Fetching profile from DB={}",
-                profileId
-        );
-
-        return repository.findById(profileId)
+        return repository.findByAuthUserId(authUserId)
                 .orElseThrow(() ->
-                        new RuntimeException(
-                                "Profile not found"
-                        ));
+                        new RuntimeException("Profile not found"));
     }
 }

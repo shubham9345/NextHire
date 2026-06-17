@@ -54,6 +54,9 @@ public class JobApplication {
 
     private String portfolioUrl;
 
+    @Column
+    private Double atsScore;
+
     @Column(length = 4000)
     private String coverLetter;
 

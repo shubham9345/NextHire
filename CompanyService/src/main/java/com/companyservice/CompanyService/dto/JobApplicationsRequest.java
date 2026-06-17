@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UpdateJobApplicationsRequest {
+public class JobApplicationsRequest {
 
     @NotNull
     @Min(0)

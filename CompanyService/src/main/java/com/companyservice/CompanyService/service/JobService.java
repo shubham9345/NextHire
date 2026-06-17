@@ -2,7 +2,7 @@ package com.companyservice.CompanyService.service;
 
 import com.companyservice.CompanyService.dto.CreateJobRequest;
 import com.companyservice.CompanyService.dto.JobResponseDto;
-import com.companyservice.CompanyService.dto.UpdateJobApplicationsRequest;
+import com.companyservice.CompanyService.dto.JobApplicationsRequest;
 import com.companyservice.CompanyService.entity.Company;
 import com.companyservice.CompanyService.entity.Job;
 import com.companyservice.CompanyService.entity.JobStatus;
@@ -10,6 +10,9 @@ import com.companyservice.CompanyService.repository.CompanyRepository;
 import com.companyservice.CompanyService.repository.JobRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -21,6 +24,7 @@ import java.util.UUID;
 public class JobService {
 
     private final JobRepository jobRepository;
+    private final JobSyncService jobSyncService;
 
     private final CompanyRepository companyRepository;
 
@@ -58,6 +62,7 @@ public class JobService {
 
         Job savedJob =
                 jobRepository.save(job);
+        jobSyncService.syncJob(job);
 
         log.info(
                 "Job created successfully {} for company {}",
@@ -78,6 +83,7 @@ public class JobService {
         job.setDeleted(true);
 
         jobRepository.save(job);
+        jobSyncService.syncJob(job);
 
         log.info(
                 "Job deleted successfully {}",
@@ -96,6 +102,7 @@ public class JobService {
 
         Job savedJob =
                 jobRepository.save(job);
+        jobSyncService.syncJob(job);
 
         log.info(
                 "Job stopped successfully {}",
@@ -107,7 +114,7 @@ public class JobService {
 
     public JobResponseDto updateAppliedCandidates(
             UUID jobId,
-            UpdateJobApplicationsRequest request
+            JobApplicationsRequest request
     ) {
 
         Job job =
@@ -155,11 +162,11 @@ public class JobService {
             Job job
     ) {
 
-        if (job.getStatus() == JobStatus.STOPPED) {
+        if (job.getStatus() == JobStatus.CLOSED) {
             return;
         }
 
-        job.setStatus(JobStatus.STOPPED);
+        job.setStatus(JobStatus.CLOSED);
         job.setStoppedAt(LocalDateTime.now());
     }
 
@@ -183,5 +190,26 @@ public class JobService {
                 .createdAt(job.getCreatedAt())
                 .stoppedAt(job.getStoppedAt())
                 .build();
+    }
+    public Page<JobResponseDto> getJobsByCompany(UUID companyId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Job> jobs = jobRepository.findByCompanyIdWithCompany(companyId, pageable);
+
+        return jobs.map(job -> JobResponseDto.builder()
+                .id(job.getId())
+                .companyId(job.getCompany().getId())  // lazy load triggers here
+                .title(job.getTitle())
+                .description(job.getDescription())
+                .location(job.getLocation())
+                .jobType(job.getJobType())
+                .experienceLevel(job.getExperienceLevel())
+                .salaryMin(job.getSalaryMin())
+                .salaryMax(job.getSalaryMax())
+                .maxCandidates(job.getMaxCandidates())
+                .appliedCandidates(job.getAppliedCandidates())
+                .status(job.getStatus())
+                .createdAt(job.getCreatedAt())
+                .stoppedAt(job.getStoppedAt())
+                .build());
     }
 }

@@ -50,13 +50,13 @@ public class UserProfileController {
                 "Resume uploaded successfully"
         );
     }
-    @GetMapping("/profile/{profileId}")
+    @GetMapping("/profile/{authId}")
     public ResponseEntity<UserProfile> getProfile(
-            @PathVariable UUID profileId
+            @PathVariable UUID authId
     ) {
 
         return ResponseEntity.ok(
-                userProfileService.getProfile(profileId)
+                userProfileService.getProfile(authId)
         );
     }
 }

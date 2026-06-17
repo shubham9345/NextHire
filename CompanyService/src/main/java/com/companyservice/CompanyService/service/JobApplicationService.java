@@ -1,6 +1,7 @@
 package com.companyservice.CompanyService.service;
 
 import com.companyservice.CompanyService.dto.ApplyJobRequest;
+import com.companyservice.CompanyService.dto.AuthUserJobApplicationResponseDto;
 import com.companyservice.CompanyService.dto.JobApplicationResponseDto;
 import com.companyservice.CompanyService.entity.ApplicationStatus;
 import com.companyservice.CompanyService.entity.Job;
@@ -11,6 +12,9 @@ import com.companyservice.CompanyService.repository.JobRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -27,6 +31,8 @@ public class JobApplicationService {
     private final JobApplicationRepository jobApplicationRepository;
 
     private final ApplicationResumeStorageService resumeStorageService;
+
+    private final AtsScoreService atsScoreService;
 
     @Transactional
     public JobApplicationResponseDto applyJob(
@@ -45,7 +51,7 @@ public class JobApplicationService {
                                 )
                         );
 
-        if (job.getStatus() == JobStatus.STOPPED) {
+        if (job.getStatus() == JobStatus.CLOSED) {
             throw new RuntimeException(
                     "Job is stopped and not accepting applications"
             );
@@ -53,7 +59,7 @@ public class JobApplicationService {
 
         boolean alreadyApplied =
                 jobApplicationRepository
-                        .existsByJob_IdAndCandidateProfileIdAndDeletedFalse(
+                        .existsByJobIdAndCandidateProfileIdAndDeletedFalse(
                                 jobId,
                                 request.getCandidateProfileId()
                         );
@@ -89,14 +95,16 @@ public class JobApplicationService {
                         .status(ApplicationStatus.APPLIED)
                         .appliedAt(LocalDateTime.now())
                         .deleted(false)
+                        .atsScore(0.0)
                         .build();
 
         JobApplication savedApplication =
                 jobApplicationRepository.save(application);
+        JobApplication jobApplication = jobApplicationRepository.findByCandidateAuthUserId(savedApplication.getCandidateAuthUserId());
 
         long appliedCandidates =
                 jobApplicationRepository
-                        .countByJob_IdAndDeletedFalse(
+                        .countByJobIdAndDeletedFalse(
                                 jobId
                         );
 
@@ -105,7 +113,7 @@ public class JobApplicationService {
         );
 
         if (appliedCandidates >= job.getMaxCandidates()) {
-            job.setStatus(JobStatus.STOPPED);
+            job.setStatus(JobStatus.CLOSED);
             job.setStoppedAt(LocalDateTime.now());
         }
 
@@ -116,11 +124,16 @@ public class JobApplicationService {
                 request.getCandidateProfileId(),
                 jobId
         );
+        //  trigger ATS score calculation in background — non blocking
+        atsScoreService.calculateAndUpdateAtsScore(
+                jobApplication.getId(),
+                request.getResume(),
+                job.getDescription()   // job description as JD
+        );
 
         return mapToDto(savedApplication);
     }
 
-    @Transactional
     public List<JobApplicationResponseDto> getApplicationsByJob(
             UUID jobId
     ) {
@@ -137,7 +150,7 @@ public class JobApplicationService {
                         );
 
         return jobApplicationRepository
-                .findByJob_IdAndDeletedFalseOrderByAppliedAtDesc(
+                .findByJobIdAndDeletedFalseOrderByAtsScoreDesc(
                         job.getId()
                 )
                 .stream()
@@ -170,5 +183,18 @@ public class JobApplicationService {
                 .status(application.getStatus())
                 .appliedAt(application.getAppliedAt())
                 .build();
+    }
+    public Page<AuthUserJobApplicationResponseDto> getAppliedJobs(UUID authUserId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<JobApplication> applications = jobApplicationRepository
+                .findAppliedJobsWithJob(authUserId, pageable);
+
+        return applications.map(app -> AuthUserJobApplicationResponseDto.builder()
+                .jobId(app.getJob().getId())
+                .jobTitle(app.getJob().getTitle())
+                .jobDesc(app.getJob().getDescription())
+                .appliedAt(app.getAppliedAt())
+                .applicationStatus(app.getStatus())
+                .build());
     }
 }

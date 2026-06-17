@@ -19,11 +19,9 @@ public class gatewayConfig {
                 .route("user-service", r -> r
                         .path("/api/users/**")
                         .uri("lb://USERSERVICE"))
-                .route(
-                        "ai-service",
-                        r -> r.path("/api/ai/**")
-                                .uri("lb://AIService")
-                )
+                .route("ai-service", r -> r
+                        .path("/api/ai/**")
+                        .uri("lb://AI-SERVICE"))
                 .route(
                         "ai-service",
                         r -> r.path("/api/companies/**")

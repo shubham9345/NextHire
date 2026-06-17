@@ -3,6 +3,8 @@ package com.UserService.UserService.dto;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
+import java.time.LocalDate;
+
 @Data
 public class CreateProfileRequest {
 
@@ -20,4 +22,12 @@ public class CreateProfileRequest {
     private Integer yearsOfExperience;
 
     private String skills;
+
+    private String resumeUrl;
+
+    private String linkedinUrl;
+
+    private String githubUrl;
+
+    private LocalDate dateOfBirth;
 }
