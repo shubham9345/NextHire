@@ -9,7 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
+
 import java.util.UUID;
 
 @Service
@@ -53,7 +54,7 @@ public class CompanyService {
         company.setLogoUrl(
                 request.getLogoUrl()
         );
-        company.setCreatedAt(LocalDateTime.now());
+        company.setCreatedAt(Instant.now());
 
         Company savedCompany =
                 companyRepository.save(company);

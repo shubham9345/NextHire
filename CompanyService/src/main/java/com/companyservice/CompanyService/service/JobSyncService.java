@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -30,7 +32,7 @@ public class JobSyncService {
                 .maxCandidates(job.getMaxCandidates())
                 .appliedCandidates(job.getAppliedCandidates())
                 .status(job.getStatus().name())
-                .createdAt(job.getCreatedAt())
+                .createdAt(LocalDateTime.now())
                 .stoppedAt(job.getStoppedAt())
                 .build();
 

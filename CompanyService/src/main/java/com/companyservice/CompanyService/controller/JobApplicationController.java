@@ -23,7 +23,7 @@ public class JobApplicationController {
     private final JobApplicationService jobApplicationService;
 
     @PostMapping(
-            value = "/{jobId}/apply",
+            value = "/apply/{jobId}",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
     public JobApplicationResponseDto applyJob(
@@ -37,7 +37,7 @@ public class JobApplicationController {
         );
     }
 
-    @GetMapping("/{jobId}/applications")
+    @GetMapping("/applications/{jobId}")
     public List<JobApplicationResponseDto> getApplicationsByJob(
             @PathVariable UUID jobId
     ) {

@@ -13,9 +13,9 @@ import java.util.UUID;
 public interface JobApplicationRepository
         extends JpaRepository<JobApplication, UUID> {
 
-    boolean existsByJobIdAndCandidateProfileIdAndDeletedFalse(
+    boolean existsByJobIdAndCandidateAuthUserIdAndDeletedFalse(
             UUID jobId,
-            UUID candidateProfileId
+            UUID candidateAuthUserId
     );
 
     long countByJobIdAndDeletedFalse(

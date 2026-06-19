@@ -14,9 +14,6 @@ import java.util.UUID;
 @Setter
 public class ApplyJobRequest {
 
-    @NotNull
-    private UUID candidateProfileId;
-
     private UUID candidateAuthUserId;
 
     @NotBlank

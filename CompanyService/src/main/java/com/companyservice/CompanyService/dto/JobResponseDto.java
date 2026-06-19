@@ -1,9 +1,13 @@
 package com.companyservice.CompanyService.dto;
 
+
 import com.companyservice.CompanyService.entity.JobStatus;
 import lombok.Builder;
 import lombok.Getter;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -35,7 +39,8 @@ public class JobResponseDto {
 
     private JobStatus status;
 
+    @Field(type = FieldType.Date, format = {}, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;
 
-    private LocalDateTime stoppedAt;
+    private Instant stoppedAt;
 }

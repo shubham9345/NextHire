@@ -17,6 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -59,9 +60,9 @@ public class JobApplicationService {
 
         boolean alreadyApplied =
                 jobApplicationRepository
-                        .existsByJobIdAndCandidateProfileIdAndDeletedFalse(
+                        .existsByJobIdAndCandidateAuthUserIdAndDeletedFalse(
                                 jobId,
-                                request.getCandidateProfileId()
+                                request.getCandidateAuthUserId()
                         );
 
         if (alreadyApplied) {
@@ -78,7 +79,6 @@ public class JobApplicationService {
         JobApplication application =
                 JobApplication.builder()
                         .job(job)
-                        .candidateProfileId(request.getCandidateProfileId())
                         .candidateAuthUserId(request.getCandidateAuthUserId())
                         .fullName(request.getFullName())
                         .email(request.getEmail())
@@ -93,7 +93,7 @@ public class JobApplicationService {
                         .portfolioUrl(request.getPortfolioUrl())
                         .coverLetter(request.getCoverLetter())
                         .status(ApplicationStatus.APPLIED)
-                        .appliedAt(LocalDateTime.now())
+                        .appliedAt(Instant.now())
                         .deleted(false)
                         .atsScore(0.0)
                         .build();
@@ -114,14 +114,14 @@ public class JobApplicationService {
 
         if (appliedCandidates >= job.getMaxCandidates()) {
             job.setStatus(JobStatus.CLOSED);
-            job.setStoppedAt(LocalDateTime.now());
+            job.setStoppedAt(Instant.now());
         }
 
         jobRepository.save(job);
 
         log.info(
                 "Candidate {} applied to job {}",
-                request.getCandidateProfileId(),
+                request.getCandidateAuthUserId(),
                 jobId
         );
         //  trigger ATS score calculation in background — non blocking
@@ -166,7 +166,6 @@ public class JobApplicationService {
                 .id(application.getId())
                 .jobId(application.getJob().getId())
                 .companyId(application.getJob().getCompany().getId())
-                .candidateProfileId(application.getCandidateProfileId())
                 .candidateAuthUserId(application.getCandidateAuthUserId())
                 .fullName(application.getFullName())
                 .email(application.getEmail())

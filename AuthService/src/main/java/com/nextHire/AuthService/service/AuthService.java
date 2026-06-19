@@ -1,7 +1,9 @@
 package com.nextHire.AuthService.service;
 
+import com.nextHire.AuthService.client.UserServiceClient;
 import com.nextHire.AuthService.dto.SignupRequest;
 import com.nextHire.AuthService.entity.UserInfo;
+import com.nextHire.AuthService.enums.Role;
 import com.nextHire.AuthService.exception.UserNotFoundException;
 import com.nextHire.AuthService.repository.UserInfoRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,27 +22,39 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Slf4j
 public class AuthService {
-    @Autowired
-    private UserInfoRepository userInfoRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+
+    private final UserInfoRepository userInfoRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final UserServiceClient userServiceClient;
+
 
     public UserInfo AddUser(SignupRequest signupRequest) {
         UserInfo existingUser = userInfoRepository.findByUsername(signupRequest.getUsername());
         UserInfo existingUserByEmail = userInfoRepository.findByEmail(signupRequest.getEmail());
 
-        if (existingUser != null || existingUserByEmail!=null) {
+        if (existingUser != null || existingUserByEmail != null) {
             throw new RuntimeException("username or email already exist!!");
         }
+
         UserInfo user = new UserInfo();
         user.setUsername(signupRequest.getUsername());
         user.setEmail(signupRequest.getEmail());
         user.setRoles(signupRequest.getRoles());
         user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
         user.setCreatedAt(LocalDateTime.now());
-        return userInfoRepository.save(user);
-    }
 
+        UserInfo saved = userInfoRepository.save(user);
+
+        // call user service to create profile after saving user
+        if (signupRequest.getRoles() == Role.CANDIDATE) {
+            userServiceClient.createUserProfile(
+                    saved.getId(),
+                    saved.getUsername()
+            );
+        }
+
+        return saved;
+    }
     public UserInfo getUserbyId(UUID Id) {
         Optional<UserInfo> UserOptional = userInfoRepository.findById(Id);
         if (UserOptional.isEmpty()) {

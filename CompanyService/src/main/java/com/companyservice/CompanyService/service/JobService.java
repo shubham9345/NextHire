@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -167,7 +168,7 @@ public class JobService {
         }
 
         job.setStatus(JobStatus.CLOSED);
-        job.setStoppedAt(LocalDateTime.now());
+        job.setStoppedAt(Instant.now());
     }
 
     private JobResponseDto mapToDto(

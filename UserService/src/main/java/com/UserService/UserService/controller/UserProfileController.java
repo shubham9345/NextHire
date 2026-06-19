@@ -1,6 +1,8 @@
 package com.UserService.UserService.controller;
 
 import com.UserService.UserService.dto.CreateProfileRequest;
+import com.UserService.UserService.dto.UpdateUserProfileRequest;
+import com.UserService.UserService.dto.UserProfileResponseDto;
 import com.UserService.UserService.entity.UserProfile;
 import com.UserService.UserService.service.FileStorageService;
 import com.UserService.UserService.service.UserProfileService;
@@ -30,11 +32,11 @@ public class UserProfileController {
         return userProfileService.createProfile(authUserId, request);
     }
     @PostMapping(
-            value = "/resume/{profileId}",
+            value = "/resume/{authId}",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
     public ResponseEntity<String> uploadResume(
-            @PathVariable UUID profileId,
+            @PathVariable UUID authId,
             @RequestParam("file") MultipartFile file
     ) {
 
@@ -42,7 +44,7 @@ public class UserProfileController {
                 fileStorageService.uploadResume(file);
 
         userProfileService.updateResume(
-                profileId,
+                authId,
                 path
         );
 
@@ -58,5 +60,14 @@ public class UserProfileController {
         return ResponseEntity.ok(
                 userProfileService.getProfile(authId)
         );
+    }
+
+    @PutMapping("/profile/{authUserId}")
+    public ResponseEntity<UserProfileResponseDto> updateProfile(
+            @PathVariable UUID authUserId,
+            @RequestBody UpdateUserProfileRequest request
+    ) {
+        UserProfileResponseDto response = userProfileService.updateProfile(authUserId, request);
+        return ResponseEntity.ok(response);
     }
 }

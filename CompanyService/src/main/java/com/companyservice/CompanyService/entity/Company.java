@@ -2,7 +2,9 @@ package com.companyservice.CompanyService.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -35,7 +37,7 @@ public class Company {
     private String logoUrl;
 
     private boolean verified;
-
-    private LocalDateTime createdAt;
+    @CreationTimestamp
+    private Instant createdAt;
     private boolean deleted;
 }

@@ -103,7 +103,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:8000", "http://localhost:8080", "http://127.0.0.1:5500", "http://localhost:5173", "http://localhost:4173", "https://connectify-ten-xi.vercel.app"));
+        configuration.setAllowedOrigins(List.of("http://localhost:8000", "http://localhost:8080","http://localhost:5173", "http://127.0.0.1:5500", "http://localhost:5174", "http://localhost:4173", "https://connectify-ten-xi.vercel.app"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
         configuration.setAllowCredentials(true);

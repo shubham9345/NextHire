@@ -2,7 +2,9 @@ package com.companyservice.CompanyService.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -22,9 +24,6 @@ public class JobApplication {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "job_id", nullable = false)
     private Job job;
-
-    @Column(nullable = false)
-    private UUID candidateProfileId;
 
     private UUID candidateAuthUserId;
 
@@ -63,8 +62,8 @@ public class JobApplication {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ApplicationStatus status;
-
-    private LocalDateTime appliedAt;
+    @CreationTimestamp
+    private Instant appliedAt;
 
     private boolean deleted;
 }
