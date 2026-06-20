@@ -1,5 +1,6 @@
 package com.nextHire.AuthService.service;
 
+import com.nextHire.AuthService.client.CompanyServiceClient;
 import com.nextHire.AuthService.client.UserServiceClient;
 import com.nextHire.AuthService.dto.SignupRequest;
 import com.nextHire.AuthService.entity.UserInfo;
@@ -26,6 +27,7 @@ public class AuthService {
     private final UserInfoRepository userInfoRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserServiceClient userServiceClient;
+    private final CompanyServiceClient companyServiceClient;
 
 
     public UserInfo AddUser(SignupRequest signupRequest) {
@@ -43,6 +45,13 @@ public class AuthService {
         user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
         user.setCreatedAt(LocalDateTime.now());
 
+        if(signupRequest.getRoles() == Role.COMPANY){
+            if(signupRequest.getCompanyName() == null) throw new UserNotFoundException("company name should not be null","company name should not be null");
+            else{
+                user.setCompanyName(signupRequest.getCompanyName());
+            }
+        }
+
         UserInfo saved = userInfoRepository.save(user);
 
         // call user service to create profile after saving user
@@ -51,6 +60,11 @@ public class AuthService {
                     saved.getId(),
                     saved.getUsername(),
                     saved.getEmail()
+            );
+        } else if (signupRequest.getRoles() == Role.COMPANY) {
+            companyServiceClient.createCompanyProfile(
+                    saved.getId(),
+                    saved.getCompanyName()
             );
         }
 

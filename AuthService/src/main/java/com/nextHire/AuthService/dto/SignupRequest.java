@@ -20,4 +20,5 @@ public class SignupRequest {
     @NotBlank(message = "password must be greater than 8 digit")
     private String password;
     private Role roles;
+    private String companyName;
 }

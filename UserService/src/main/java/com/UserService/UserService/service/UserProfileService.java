@@ -1,7 +1,9 @@
 package com.UserService.UserService.service;
 
+import com.UserService.UserService.config.UserProfileSpecification;
 import com.UserService.UserService.dto.CreateProfileRequest;
 import com.UserService.UserService.dto.UpdateUserProfileRequest;
+import com.UserService.UserService.dto.UserProfileFilterRequest;
 import com.UserService.UserService.dto.UserProfileResponseDto;
 import com.UserService.UserService.entity.UserProfile;
 import com.UserService.UserService.repository.UserProfileRepository;
@@ -9,6 +11,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -122,6 +129,25 @@ public class UserProfileService {
 
         UserProfile updated = repository.save(profile);
         return mapToDto(updated);
+    }
+
+    public Page<UserProfileResponseDto> getFilteredProfiles(UserProfileFilterRequest filter) {
+        Pageable pageable = PageRequest.of(
+                filter.getPage(),
+                filter.getSize(),
+                Sort.by(Sort.Direction.DESC, "createdAt")
+        );
+
+        Specification<UserProfile> spec = UserProfileSpecification.withFilters(
+                filter.getYearsOfExperience(),
+                filter.getLocation(),
+                filter.getHeadline(),
+                filter.getSkills()
+        );
+
+        Page<UserProfile> profiles = repository.findAll(spec, pageable);
+
+        return profiles.map(this::mapToDto);
     }
 
     private UserProfileResponseDto mapToDto(UserProfile profile) {

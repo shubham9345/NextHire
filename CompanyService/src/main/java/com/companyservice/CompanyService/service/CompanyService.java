@@ -126,22 +126,19 @@ public class CompanyService {
         );
     }
 
-    public CompanyResponseDto getProfile(
+    public Company getProfile(
             UUID companyId
     ) {
 
-        Company company =
-                companyRepository
-                        .findByIdAndDeletedFalse(
-                                companyId
+        return companyRepository
+                .findByIdAndDeletedFalse(
+                        companyId
+                )
+                .orElseThrow(() ->
+                        new RuntimeException(
+                                "Company not found"
                         )
-                        .orElseThrow(() ->
-                                new RuntimeException(
-                                        "Company not found"
-                                )
-                        );
-
-        return mapToDto(company);
+                );
     }
     public CompanyResponseDto updateProfile(UUID authUserId, companyProfileRequest request) {
         Company company = companyRepository.findByAuthUserIdAndDeletedFalse(authUserId)

@@ -32,5 +32,7 @@ public class UserInfo {
 
     private boolean isVerified;
 
+    private String CompanyName;
+
     private LocalDateTime createdAt;
 }

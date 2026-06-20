@@ -2,6 +2,7 @@ package com.companyservice.CompanyService.controller;
 
 import com.companyservice.CompanyService.dto.CompanyResponseDto;
 import com.companyservice.CompanyService.dto.companyProfileRequest;
+import com.companyservice.CompanyService.entity.Company;
 import com.companyservice.CompanyService.service.CompanyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -56,7 +57,7 @@ public class CompanyController {
     }
 
     @GetMapping("/profile/{companyId}")
-    public CompanyResponseDto getProfile(
+    public Company getProfile(
 
             @PathVariable
             UUID companyId
