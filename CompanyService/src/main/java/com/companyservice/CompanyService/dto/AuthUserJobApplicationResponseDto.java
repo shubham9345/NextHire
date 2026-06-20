@@ -15,5 +15,6 @@ public class AuthUserJobApplicationResponseDto {
     private String jobTitle;
     private String jobDesc;
     private Instant appliedAt;
+    private Double atsScore;
     private ApplicationStatus applicationStatus;
 }

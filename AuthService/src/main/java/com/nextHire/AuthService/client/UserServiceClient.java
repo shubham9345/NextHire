@@ -20,13 +20,14 @@ public class UserServiceClient {
 
     private static final String USER_SERVICE_URL = "http://USERSERVICE";
 
-    public void createUserProfile(UUID authUserId, String fullName) {
+    public void createUserProfile(UUID authUserId, String fullName,String email) {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
 
             CreateProfileRequest request = CreateProfileRequest.builder()
                     .fullName(fullName)
+                    .email(email)
                     .build();
 
             HttpEntity<CreateProfileRequest> entity = new HttpEntity<>(request, headers);

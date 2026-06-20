@@ -49,7 +49,8 @@ public class AuthService {
         if (signupRequest.getRoles() == Role.CANDIDATE) {
             userServiceClient.createUserProfile(
                     saved.getId(),
-                    saved.getUsername()
+                    saved.getUsername(),
+                    saved.getEmail()
             );
         }
 

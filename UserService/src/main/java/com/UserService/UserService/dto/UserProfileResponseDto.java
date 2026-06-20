@@ -16,6 +16,7 @@ public class UserProfileResponseDto {
     private String phoneNumber;
     private String headline;
     private String bio;
+    private String email;
     private String location;
     private Integer yearsOfExperience;
     private String skills;

@@ -32,6 +32,7 @@ public class UserProfileService {
                 .authUserId(authUserId)
                 .fullName(request.getFullName())
                 .phoneNumber(request.getPhoneNumber())
+                .email(request.getEmail())
                 .headline(request.getHeadline())
                 .bio(request.getBio())
                 .location(request.getLocation())

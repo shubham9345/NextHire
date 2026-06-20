@@ -31,6 +31,8 @@ public class UserProfile {
 
     private String phoneNumber;
 
+    private String email;
+
     private String headline;
 
     @Column(length = 2000)

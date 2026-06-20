@@ -15,6 +15,8 @@ public class CreateProfileRequest {
 
     private String headline;
 
+    private String email;
+
     private String bio;
 
     private String location;

@@ -14,6 +14,7 @@ import java.time.LocalDate;
 public class CreateProfileRequest {
     private String fullName;
     private String phoneNumber;
+    private String email;
     private String headline;
     private String bio;
     private String location;

@@ -100,7 +100,7 @@ public class JobApplicationService {
 
         JobApplication savedApplication =
                 jobApplicationRepository.save(application);
-        JobApplication jobApplication = jobApplicationRepository.findByCandidateAuthUserId(savedApplication.getCandidateAuthUserId());
+       // JobApplication jobApplication = jobApplicationRepository.findByCandidateAuthUserId(savedApplication.getCandidateAuthUserId());
 
         long appliedCandidates =
                 jobApplicationRepository
@@ -126,7 +126,7 @@ public class JobApplicationService {
         );
         //  trigger ATS score calculation in background — non blocking
         atsScoreService.calculateAndUpdateAtsScore(
-                jobApplication.getId(),
+                savedApplication.getId(),
                 request.getResume(),
                 job.getDescription()   // job description as JD
         );
@@ -194,6 +194,7 @@ public class JobApplicationService {
                 .jobDesc(app.getJob().getDescription())
                 .appliedAt(app.getAppliedAt())
                 .applicationStatus(app.getStatus())
+                .atsScore(app.getAtsScore())
                 .build());
     }
 }
