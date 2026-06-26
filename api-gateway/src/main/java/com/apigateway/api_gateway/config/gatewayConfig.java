@@ -25,7 +25,7 @@ public class gatewayConfig {
                 .route(
                         "ai-service",
                         r -> r.path("/api/companies/**")
-                                .uri("lb://CompanyService")
+                                .uri("lb://COMPANYSERVICE")
                 )
 
                 .build();

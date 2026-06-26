@@ -1,7 +1,7 @@
 package com.AIService.AIService.controller;
 
 import com.AIService.AIService.dto.ATSResponseDto;
-import com.AIService.AIService.service.AtsService;
+import com.AIService.AIService.serviceImpl.AtsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;

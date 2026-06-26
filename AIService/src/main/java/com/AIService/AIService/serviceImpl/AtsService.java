@@ -1,4 +1,4 @@
-package com.AIService.AIService.service;
+package com.AIService.AIService.serviceImpl;
 
 import com.AIService.AIService.dto.ATSResponseDto;
 import lombok.RequiredArgsConstructor;

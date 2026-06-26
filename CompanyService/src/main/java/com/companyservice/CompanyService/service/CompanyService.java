@@ -127,12 +127,12 @@ public class CompanyService {
     }
 
     public Company getProfile(
-            UUID companyId
+            UUID authId
     ) {
 
         return companyRepository
-                .findByIdAndDeletedFalse(
-                        companyId
+                .findByAuthUserIdAndDeletedFalse(
+                        authId
                 )
                 .orElseThrow(() ->
                         new RuntimeException(

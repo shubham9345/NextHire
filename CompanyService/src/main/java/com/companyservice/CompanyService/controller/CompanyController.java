@@ -56,15 +56,15 @@ public class CompanyController {
         );
     }
 
-    @GetMapping("/profile/{companyId}")
+    @GetMapping("/profile/{authId}")
     public Company getProfile(
 
             @PathVariable
-            UUID companyId
+            UUID authId
     ) {
 
         return companyService.getProfile(
-                companyId
+                authId
         );
     }
 }
