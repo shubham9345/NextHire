@@ -1,4 +1,4 @@
-package com.companyservice.CompanyService.service;
+package com.companyservice.CompanyService.serviceImpl;
 
 import com.companyservice.CompanyService.entity.Job;
 import com.companyservice.CompanyService.entity.JobDocument;
@@ -7,14 +7,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class JobSyncService {
+public class JobSyncServiceImpl {
 
     private final JobSearchRepository jobSearchRepository;
 

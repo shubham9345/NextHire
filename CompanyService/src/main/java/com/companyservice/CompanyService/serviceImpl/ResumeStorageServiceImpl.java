@@ -1,4 +1,4 @@
-package com.companyservice.CompanyService.service;
+package com.companyservice.CompanyService.serviceImpl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,11 +13,11 @@ import java.util.UUID;
 
 @Service
 @Slf4j
-public class ApplicationResumeStorageService {
+public class ResumeStorageServiceImpl {
 
     private final Path uploadPath;
 
-    public ApplicationResumeStorageService(
+    public ResumeStorageServiceImpl(
             @Value("${file.upload-dir:uploads/applications/resumes}") String uploadDir
     ) {
 

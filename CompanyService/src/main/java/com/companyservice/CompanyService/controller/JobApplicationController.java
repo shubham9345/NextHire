@@ -4,10 +4,10 @@ import com.companyservice.CompanyService.dto.ApplyJobRequest;
 import com.companyservice.CompanyService.dto.AuthUserJobApplicationResponseDto;
 import com.companyservice.CompanyService.dto.JobApplicationResponseDto;
 import com.companyservice.CompanyService.service.JobApplicationService;
+import com.companyservice.CompanyService.serviceImpl.JobApplicationServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +20,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class JobApplicationController {
 
-    private final JobApplicationService jobApplicationService;
+    private final JobApplicationService jobApplicationServiceImpl;
 
     @PostMapping(
             value = "/apply/{jobId}",
@@ -31,7 +31,7 @@ public class JobApplicationController {
             @Valid @ModelAttribute ApplyJobRequest request
     ) {
 
-        return jobApplicationService.applyJob(
+        return jobApplicationServiceImpl.applyJob(
                 jobId,
                 request
         );
@@ -42,7 +42,7 @@ public class JobApplicationController {
             @PathVariable UUID jobId
     ) {
 
-        return jobApplicationService.getApplicationsByJob(
+        return jobApplicationServiceImpl.getApplicationsByJob(
                 jobId
         );
     }
@@ -52,7 +52,7 @@ public class JobApplicationController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        Page<AuthUserJobApplicationResponseDto> response = jobApplicationService.getAppliedJobs(authUserId, page, size);
+        Page<AuthUserJobApplicationResponseDto> response = jobApplicationServiceImpl.getAppliedJobs(authUserId, page, size);
         return ResponseEntity.ok(response);
     }
 }

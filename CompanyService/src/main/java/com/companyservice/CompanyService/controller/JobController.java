@@ -4,8 +4,9 @@ import com.companyservice.CompanyService.dto.CreateJobRequest;
 import com.companyservice.CompanyService.dto.JobResponseDto;
 import com.companyservice.CompanyService.dto.JobSearchFilterRequest;
 import com.companyservice.CompanyService.dto.JobApplicationsRequest;
-import com.companyservice.CompanyService.service.JobSearchService;
 import com.companyservice.CompanyService.service.JobService;
+import com.companyservice.CompanyService.serviceImpl.JobSearchServiceImpl;
+import com.companyservice.CompanyService.serviceImpl.JobServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,8 +22,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class JobController {
 
-    private final JobService jobService;
-    private final JobSearchService jobSearchService;
+    private final JobService jobServiceImpl;
+    private final JobSearchServiceImpl jobSearchServiceImpl;
 
     @PostMapping("/job/{companyId}")
     public JobResponseDto createJob(
@@ -30,7 +31,7 @@ public class JobController {
             @Valid @RequestBody CreateJobRequest request
     ) {
 
-        return jobService.createJob(
+        return jobServiceImpl.createJob(
                 companyId,
                 request
         );
@@ -41,7 +42,7 @@ public class JobController {
             @PathVariable UUID jobId
     ) {
 
-        return jobService.getJob(
+        return jobServiceImpl.getJob(
                 jobId
         );
     }
@@ -51,7 +52,7 @@ public class JobController {
             @PathVariable UUID jobId
     ) {
 
-        jobService.deleteJob(
+        jobServiceImpl.deleteJob(
                 jobId
         );
 
@@ -65,7 +66,7 @@ public class JobController {
             @PathVariable UUID jobId
     ) {
 
-        return jobService.stopJob(
+        return jobServiceImpl.stopJob(
                 jobId
         );
     }
@@ -76,7 +77,7 @@ public class JobController {
             @Valid @RequestBody JobApplicationsRequest request
     ) {
 
-        return jobService.updateAppliedCandidates(
+        return jobServiceImpl.updateAppliedCandidates(
                 jobId,
                 request
         );
@@ -87,7 +88,7 @@ public class JobController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        Page<JobResponseDto> response = jobService.getJobsByCompany(companyId, page, size);
+        Page<JobResponseDto> response = jobServiceImpl.getJobsByCompany(companyId, page, size);
         return ResponseEntity.ok(response);
     }
 
@@ -113,6 +114,6 @@ public class JobController {
         filter.setPage(page);
         filter.setSize(size);
 
-        return ResponseEntity.ok(jobSearchService.searchJobs(filter));
+        return ResponseEntity.ok(jobSearchServiceImpl.searchJobs(filter));
     }
 }

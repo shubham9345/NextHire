@@ -1,4 +1,4 @@
-package com.nextHire.AuthService.service;
+package com.nextHire.AuthService.serviceImpl;
 
 import com.nextHire.AuthService.entity.UserInfo;
 import com.nextHire.AuthService.entity.UserInfoDetails;

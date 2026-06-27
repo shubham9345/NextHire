@@ -1,4 +1,4 @@
-package com.companyservice.CompanyService.service;
+package com.companyservice.CompanyService.serviceImpl;
 
 
 import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class JobSearchService {
+public class JobSearchServiceImpl {
 
     private final ElasticsearchOperations elasticsearchOperations;
 

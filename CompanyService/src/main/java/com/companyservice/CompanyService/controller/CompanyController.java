@@ -4,6 +4,7 @@ import com.companyservice.CompanyService.dto.CompanyResponseDto;
 import com.companyservice.CompanyService.dto.companyProfileRequest;
 import com.companyservice.CompanyService.entity.Company;
 import com.companyservice.CompanyService.service.CompanyService;
+import com.companyservice.CompanyService.serviceImpl.CompanyServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +16,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class CompanyController {
 
-    private final CompanyService companyService;
+    private final CompanyService companyServiceImpl;
 
     @PostMapping("/profile/{authUserId}")
     public CompanyResponseDto createProfile(
@@ -25,7 +26,7 @@ public class CompanyController {
             @RequestBody companyProfileRequest request
     ) {
 
-        return companyService.createProfile(
+        return companyServiceImpl.createProfile(
                 authUserId,
                 request
         );
@@ -36,7 +37,7 @@ public class CompanyController {
             @PathVariable UUID authUserId,
             @RequestBody companyProfileRequest request
     ) {
-        CompanyResponseDto response = companyService.updateProfile(authUserId, request);
+        CompanyResponseDto response = companyServiceImpl.updateProfile(authUserId, request);
         return ResponseEntity.ok(response);
     }
 
@@ -47,7 +48,7 @@ public class CompanyController {
             UUID companyId
     ) {
 
-        companyService.deleteCompany(
+        companyServiceImpl.deleteCompany(
                 companyId
         );
 
@@ -63,7 +64,7 @@ public class CompanyController {
             UUID authId
     ) {
 
-        return companyService.getProfile(
+        return companyServiceImpl.getProfile(
                 authId
         );
     }

@@ -4,7 +4,7 @@ import com.nextHire.AuthService.security.JwtAccessDeniedHandler;
 import com.nextHire.AuthService.security.JwtAuthFilter;
 import com.nextHire.AuthService.security.JwtAuthenticationEntryPoint;
 import com.nextHire.AuthService.security.JwtUtil;
-import com.nextHire.AuthService.service.CustomUserDetailService;
+import com.nextHire.AuthService.serviceImpl.CustomUserDetailService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -64,9 +64,9 @@ public class SecurityConfig {
                         .requestMatchers("/admin").hasRole("Admin")
                         .anyRequest().authenticated()
                 )
-                .exceptionHandling(exceptions -> exceptions
-                        .accessDeniedHandler(jwtAccessDeniedHandler)
-                        .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint)      // ← 401 handler
+                        .accessDeniedHandler(jwtAccessDeniedHandler)       // ← 403 handler
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())

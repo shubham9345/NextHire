@@ -5,8 +5,9 @@ import com.UserService.UserService.dto.UpdateUserProfileRequest;
 import com.UserService.UserService.dto.UserProfileFilterRequest;
 import com.UserService.UserService.dto.UserProfileResponseDto;
 import com.UserService.UserService.entity.UserProfile;
-import com.UserService.UserService.service.FileStorageService;
 import com.UserService.UserService.service.UserProfileService;
+import com.UserService.UserService.serviceImpl.FileStorageService;
+import com.UserService.UserService.serviceImpl.UserProfileServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,7 +23,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserProfileController {
 
-    private final UserProfileService userProfileService;
+    private final UserProfileService userProfileServiceImpl;
     private final FileStorageService fileStorageService;
 
     @PostMapping("/profile/{authUserId}")
@@ -31,7 +32,7 @@ public class UserProfileController {
             @Valid @RequestBody CreateProfileRequest request
     ) {
 
-        return userProfileService.createProfile(authUserId, request);
+        return userProfileServiceImpl.createProfile(authUserId, request);
     }
     @PostMapping(
             value = "/resume/{authId}",
@@ -45,7 +46,7 @@ public class UserProfileController {
         String path =
                 fileStorageService.uploadResume(file);
 
-        userProfileService.updateResume(
+        userProfileServiceImpl.updateResume(
                 authId,
                 path
         );
@@ -60,7 +61,7 @@ public class UserProfileController {
     ) {
 
         return ResponseEntity.ok(
-                userProfileService.getProfile(authId)
+                userProfileServiceImpl.getProfile(authId)
         );
     }
 
@@ -69,7 +70,7 @@ public class UserProfileController {
             @PathVariable UUID authUserId,
             @RequestBody UpdateUserProfileRequest request
     ) {
-        UserProfileResponseDto response = userProfileService.updateProfile(authUserId, request);
+        UserProfileResponseDto response = userProfileServiceImpl.updateProfile(authUserId, request);
         return ResponseEntity.ok(response);
     }
 
@@ -90,7 +91,7 @@ public class UserProfileController {
         filter.setPage(page);
         filter.setSize(size);
 
-        Page<UserProfileResponseDto> response = userProfileService.getFilteredProfiles(filter);
+        Page<UserProfileResponseDto> response = userProfileServiceImpl.getFilteredProfiles(filter);
         return ResponseEntity.ok(response);
     }
 }

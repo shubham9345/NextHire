@@ -1,4 +1,4 @@
-package com.nextHire.AuthService.service;
+package com.nextHire.AuthService.serviceImpl;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
