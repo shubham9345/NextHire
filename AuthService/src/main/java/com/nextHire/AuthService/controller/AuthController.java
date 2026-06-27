@@ -8,6 +8,7 @@ import com.nextHire.AuthService.repository.UserInfoRepository;
 import com.nextHire.AuthService.security.JwtUtil;
 import com.nextHire.AuthService.service.AuthService;
 import com.nextHire.AuthService.service.CustomUserDetailService;
+import com.nextHire.AuthService.service.GoogleAuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,8 @@ public class AuthController {
     private AuthenticationManager authenticationManager;
     @Autowired
     private UserInfoRepository userInfoRepository;
+    @Autowired
+    private GoogleAuthService googleAuthService;
 
     @PostMapping("/signup")
     public ResponseEntity<UserInfo> Signup( @Valid @RequestBody SignupRequest signupRequest) {
@@ -102,6 +105,40 @@ public class AuthController {
         String token = this.jwtUtil.generateToken(userDetails.getUsername(), userDetails.getId());
         JwtResponse response = new JwtResponse(token,userDetails.getRoles().toString());
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    // ─── GOOGLE LOGIN / SIGNUP (CANDIDATE) ───────────────────────────────────────
+    @PostMapping("/google")
+    public ResponseEntity<JwtResponse> googleLogin(@RequestBody GoogleTokenRequest request) {
+        try {
+            UserInfo user = googleAuthService.verifyAndGetUser(request.getIdToken());
+            String token = jwtUtil.generateToken(user.getUsername(), user.getId());
+            JwtResponse response = new JwtResponse(token, user.getRoles().toString());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    // ─── GOOGLE LOGIN / SIGNUP (COMPANY) ─────────────────────────────────────────
+    @PostMapping("/company-google")
+    public ResponseEntity<JwtResponse> companyGoogleLogin(@RequestBody GoogleTokenRequest request) {
+        try {
+            UserInfo user = googleAuthService.verifyAndGetUser(request.getIdToken());
+
+            // Block candidates from using company login
+            if (user.getRoles() == Role.CANDIDATE) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+
+            String token = jwtUtil.generateToken(user.getUsername(), user.getId());
+            JwtResponse response = new JwtResponse(token, user.getRoles().toString());
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
     }
 
     @GetMapping("/all-user")

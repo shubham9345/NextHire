@@ -36,6 +36,8 @@ public class InterviewSession {
     @Column(name = "job_id", nullable = false)
     private UUID jobId;
 
+    private String email;
+
     // Snapshot of job title at session creation (denormalised for report generation)
     @Column(name = "job_title")
     private String jobTitle;

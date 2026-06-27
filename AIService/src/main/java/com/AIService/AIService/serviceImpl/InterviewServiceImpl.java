@@ -43,6 +43,7 @@ public class InterviewServiceImpl implements InterviewService {
     private final InterviewSessionCacheService cache;
     private final NotificationService notificationService;
     private final ObjectMapper objectMapper;
+    private final EmailService emailService;
 
     @Autowired
     private final JobServiceClient jobClient;
@@ -79,6 +80,8 @@ public class InterviewServiceImpl implements InterviewService {
                 .jobDescription(job.getDescription())
                 .requiredSkills(job.getRequiredSkills())
                 .status(InterviewEnums.SessionStatus.PENDING)
+                .createdAt(LocalDateTime.now())
+                .email(user.getEmail())
                 .build();
         session = sessionRepo.save(session);
 
@@ -87,6 +90,9 @@ public class InterviewServiceImpl implements InterviewService {
 
         log.info("Interview session created: sessionId={} userId={} jobId={}",
                 session.getId(), userId, request.getJobId());
+
+        SendStartSessionEmail(user.getEmail());
+        log.info("Interview start email send to {}", user.getEmail());
 
         return InterviewDTOs.SessionResponse.builder()
                 .sessionId(session.getId())
@@ -234,7 +240,7 @@ public class InterviewServiceImpl implements InterviewService {
 
         // If all questions answered, mark session as evaluating
         if (allAnswered) {
-            session.setStatus(InterviewEnums.SessionStatus.EVALUATING);
+            session.setStatus(InterviewEnums.SessionStatus.COMPLETED);
             sessionRepo.save(session);
             log.info("All answers received for sessionId={}, evaluation in progress", sessionId);
         }
@@ -302,6 +308,8 @@ public class InterviewServiceImpl implements InterviewService {
 
             if (doneEvals >= totalQ) {
                 generateReportAsync(session.getId(), session.getUserId());
+                sendInterviewCompletionEmail(session.getEmail());
+                log.info("Interview Completion email send to {}", session.getEmail());
             }
 
         } catch (Exception e) {
@@ -336,10 +344,7 @@ public class InterviewServiceImpl implements InterviewService {
                     feedbacks
             );
 
-            // TODO: Generate PDF with Apache PDFBox / iText and upload to Firebase
-            // For now, store the summary text as the report (replace with PDF URL later)
             String reportPlaceholderUrl = "report-pending-pdf-generation";
-
             session.setOverallScore(avgScore != null ? Math.round(avgScore * 10.0) / 10.0 : 0.0);
             session.setReportUrl(reportPlaceholderUrl);
             session.setStatus(InterviewEnums.SessionStatus.COMPLETED);
@@ -476,5 +481,51 @@ public class InterviewServiceImpl implements InterviewService {
         } catch (Exception e) {
             return json;
         }
+    }
+    @Async
+    private void SendStartSessionEmail(String candidateEmail){
+        // Interview Started
+        String subject = "Your Interview Has Started";
+
+        String body = """
+                Dear Candidate,
+                
+                Your interview session has started successfully.
+                
+                Please ensure that:
+                - You have a stable internet connection.
+                - Your camera and microphone remain enabled throughout the interview.
+                - You complete the interview within the allotted time.
+                - You avoid refreshing or closing the browser window during the session.
+                
+                We wish you the very best for your interview!
+                
+                Best regards,
+                NextHire Management Team
+                """;
+
+        emailService.sendUpdateMail(candidateEmail, subject, body);
+    }
+    @Async
+    private void sendInterviewCompletionEmail(String candidateEmail){
+        // Interview Completed
+        String subject = "Interview Completed Successfully";
+
+        String body = """
+                Dear Candidate,
+                
+                Congratulations! You have successfully completed your interview.
+                
+                Thank you for taking the time to participate. Your responses have been recorded and will be reviewed by our team.
+                
+                You will be notified about the next steps once the evaluation process is complete.
+                
+                We appreciate your interest and wish you all the best.
+                
+                Best regards,
+                NextHire Management Team
+                """;
+
+        emailService.sendUpdateMail(candidateEmail, subject, body);
     }
 }

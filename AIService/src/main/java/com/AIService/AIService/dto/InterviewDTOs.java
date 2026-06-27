@@ -28,7 +28,7 @@ public class InterviewDTOs {
         private UUID jobId;
 
         // Optional: override default question count (5–10)
-        @Min(5)
+        @Min(2)
         @Max(10)
         private Integer questionCount = 7;
     }

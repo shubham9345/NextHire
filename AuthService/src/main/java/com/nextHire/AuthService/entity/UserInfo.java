@@ -34,5 +34,11 @@ public class UserInfo {
 
     private String CompanyName;
 
+    @Column(name = "google_id")
+    private String googleId;
+
+    @Column(name = "provider")
+    private String provider = "LOCAL";
+
     private LocalDateTime createdAt;
 }
