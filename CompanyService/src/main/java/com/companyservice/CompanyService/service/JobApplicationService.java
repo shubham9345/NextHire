@@ -24,4 +24,5 @@ public interface JobApplicationService {
             int page,
             int size
     );
+    void shortlistCandidate(UUID applicationId);
 }

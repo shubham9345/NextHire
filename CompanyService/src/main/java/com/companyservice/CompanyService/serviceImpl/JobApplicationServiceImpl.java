@@ -37,6 +37,8 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 
     private final AtsScoreService atsScoreServiceImpl;
 
+    private final EmailService emailService;
+
     @Transactional
     public JobApplicationResponseDto applyJob(
             UUID jobId,
@@ -182,6 +184,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
                 .coverLetter(application.getCoverLetter())
                 .status(application.getStatus())
                 .appliedAt(application.getAppliedAt())
+                .atsScore(application.getAtsScore())
                 .build();
     }
     public Page<AuthUserJobApplicationResponseDto> getAppliedJobs(UUID authUserId, int page, int size) {
@@ -197,5 +200,16 @@ public class JobApplicationServiceImpl implements JobApplicationService {
                 .applicationStatus(app.getStatus())
                 .atsScore(app.getAtsScore())
                 .build());
+    }
+
+    @Transactional
+    public void shortlistCandidate(UUID applicationId) {
+
+        JobApplication application = jobApplicationRepository.findById(applicationId)
+                .orElseThrow(() -> new RuntimeException("Application not found"));
+
+        application.setStatus(ApplicationStatus.SHORTLISTED);
+        jobApplicationRepository.save(application);
+        emailService.sendShortlistedEmail(application.getEmail());
     }
 }

@@ -36,6 +36,8 @@ public class JobApplicationResponseDto {
 
     private String skills;
 
+    private double atsScore;
+
     private String resumeUrl;
 
     private String linkedinUrl;

@@ -55,4 +55,12 @@ public class JobApplicationController {
         Page<AuthUserJobApplicationResponseDto> response = jobApplicationServiceImpl.getAppliedJobs(authUserId, page, size);
         return ResponseEntity.ok(response);
     }
+    @PatchMapping("/shortlisted/{applicationId}")
+    public ResponseEntity<String> shortlistCandidate(
+            @PathVariable UUID applicationId) {
+
+        jobApplicationServiceImpl.shortlistCandidate(applicationId);
+
+        return ResponseEntity.ok("Candidate shortlisted successfully.");
+    }
 }
