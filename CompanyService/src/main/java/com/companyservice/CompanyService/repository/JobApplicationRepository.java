@@ -1,9 +1,11 @@
 package com.companyservice.CompanyService.repository;
 
 import com.companyservice.CompanyService.entity.JobApplication;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -32,4 +34,15 @@ public interface JobApplicationRepository
     List<JobApplication> findByJobIdAndDeletedFalseOrderByAtsScoreDesc(UUID jobId);
 
     JobApplication findByCandidateAuthUserId(UUID candidateAuthUserId);
+
+    @Modifying
+    @Transactional
+    @Query(value = """
+            UPDATE job_applications
+            SET status = 'REJECTED'
+            WHERE status = 'OPEN'
+              AND applied_at < CURRENT_TIMESTAMP - INTERVAL '90 days'
+            """, nativeQuery = true)
+    int rejectExpiredApplications();
+
 }

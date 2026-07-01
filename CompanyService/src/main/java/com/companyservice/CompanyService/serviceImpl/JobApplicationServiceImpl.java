@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -211,5 +212,10 @@ public class JobApplicationServiceImpl implements JobApplicationService {
         application.setStatus(ApplicationStatus.SHORTLISTED);
         jobApplicationRepository.save(application);
         emailService.sendShortlistedEmail(application.getEmail());
+    }
+    @Scheduled(cron = "0 0 0 * * *") // Every day at midnight
+    public void rejectExpiredApplications() {
+        int updated = jobApplicationRepository.rejectExpiredApplications();
+        log.info("{} applications marked as REJECTED", updated);
     }
 }
