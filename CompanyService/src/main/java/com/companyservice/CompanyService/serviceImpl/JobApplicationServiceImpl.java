@@ -1,7 +1,7 @@
 package com.companyservice.CompanyService.serviceImpl;
 
 import com.companyservice.CompanyService.dto.ApplyJobRequest;
-import com.companyservice.CompanyService.dto.AuthUserJobApplicationResponseDto;
+import com.companyservice.CompanyService.dto.UserJobApplicationResponseDto;
 import com.companyservice.CompanyService.dto.JobApplicationResponseDto;
 import com.companyservice.CompanyService.entity.ApplicationStatus;
 import com.companyservice.CompanyService.entity.Job;
@@ -10,7 +10,6 @@ import com.companyservice.CompanyService.entity.JobStatus;
 import com.companyservice.CompanyService.repository.JobApplicationRepository;
 import com.companyservice.CompanyService.repository.JobRepository;
 import com.companyservice.CompanyService.service.AtsScoreService;
-import com.companyservice.CompanyService.service.CompanyService;
 import com.companyservice.CompanyService.service.JobApplicationService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -188,12 +187,12 @@ public class JobApplicationServiceImpl implements JobApplicationService {
                 .atsScore(application.getAtsScore())
                 .build();
     }
-    public Page<AuthUserJobApplicationResponseDto> getAppliedJobs(UUID authUserId, int page, int size) {
+    public Page<UserJobApplicationResponseDto> getAppliedJobs(UUID authUserId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<JobApplication> applications = jobApplicationRepository
                 .findAppliedJobsWithJob(authUserId, pageable);
 
-        return applications.map(app -> AuthUserJobApplicationResponseDto.builder()
+        return applications.map(app -> UserJobApplicationResponseDto.builder()
                 .jobId(app.getJob().getId())
                 .jobTitle(app.getJob().getTitle())
                 .jobDesc(app.getJob().getDescription())
@@ -213,6 +212,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
         jobApplicationRepository.save(application);
         emailService.sendShortlistedEmail(application.getEmail());
     }
+
     @Scheduled(cron = "0 0 0 * * *") // Every day at midnight
     public void rejectExpiredApplications() {
         int updated = jobApplicationRepository.rejectExpiredApplications();

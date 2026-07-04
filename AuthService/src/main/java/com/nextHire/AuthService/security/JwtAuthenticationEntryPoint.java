@@ -18,7 +18,7 @@ public class JwtAuthenticationEntryPoint extends Http403ForbiddenEntryPoint {
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException arg2) throws IOException {
         response.setStatus(HttpStatus.FORBIDDEN.value());
 
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/auth/error");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/api/auth/error");
 
         try {
             dispatcher.forward(request, response);

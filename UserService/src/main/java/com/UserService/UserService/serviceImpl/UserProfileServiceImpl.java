@@ -10,6 +10,7 @@ import com.UserService.UserService.repository.UserProfileRepository;
 import com.UserService.UserService.service.UserProfileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -73,6 +74,7 @@ public class UserProfileServiceImpl implements UserProfileService {
                 authId
         );
     }
+    @Cacheable(value = "userProfile", key = "#authUserId")
     public UserProfile getProfile(UUID authUserId) {
 
         return repository.findByAuthUserId(authUserId)

@@ -1,7 +1,7 @@
 package com.companyservice.CompanyService.service;
 
 import com.companyservice.CompanyService.dto.ApplyJobRequest;
-import com.companyservice.CompanyService.dto.AuthUserJobApplicationResponseDto;
+import com.companyservice.CompanyService.dto.UserJobApplicationResponseDto;
 import com.companyservice.CompanyService.dto.JobApplicationResponseDto;
 import org.springframework.data.domain.Page;
 
@@ -19,7 +19,7 @@ public interface JobApplicationService {
             UUID jobId
     );
 
-    Page<AuthUserJobApplicationResponseDto> getAppliedJobs(
+    Page<UserJobApplicationResponseDto> getAppliedJobs(
             UUID authUserId,
             int page,
             int size

@@ -96,7 +96,6 @@ public class PasswordResetService {
         user.setPassword(passwordEncoder.encode(newPassword));
         userInfoRepository.save(user);
 
-        // invalidate token so it can't be reused
         entry.setResetToken(null);
         entry.setResetTokenExpiry(null);
         otpRepository.save(entry);

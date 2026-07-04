@@ -59,7 +59,6 @@ public class SecurityConfig {
                     throws ServletException, IOException {
 
                 // Gateway already validated the JWT and set X-User-Id header.
-                // This service re-validates for defence in depth.
                 String authHeader = request.getHeader("Authorization");
 
                 if (authHeader != null && authHeader.startsWith("Bearer ")) {

@@ -1,10 +1,9 @@
 package com.companyservice.CompanyService.controller;
 
 import com.companyservice.CompanyService.dto.ApplyJobRequest;
-import com.companyservice.CompanyService.dto.AuthUserJobApplicationResponseDto;
+import com.companyservice.CompanyService.dto.UserJobApplicationResponseDto;
 import com.companyservice.CompanyService.dto.JobApplicationResponseDto;
 import com.companyservice.CompanyService.service.JobApplicationService;
-import com.companyservice.CompanyService.serviceImpl.JobApplicationServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -47,12 +46,12 @@ public class JobApplicationController {
         );
     }
     @GetMapping("/applied-jobs")
-    public ResponseEntity<Page<AuthUserJobApplicationResponseDto>> getAppliedJobs(
+    public ResponseEntity<Page<UserJobApplicationResponseDto>> getAppliedJobs(
             @RequestHeader("X-Auth-User-Id") UUID authUserId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        Page<AuthUserJobApplicationResponseDto> response = jobApplicationServiceImpl.getAppliedJobs(authUserId, page, size);
+        Page<UserJobApplicationResponseDto> response = jobApplicationServiceImpl.getAppliedJobs(authUserId, page, size);
         return ResponseEntity.ok(response);
     }
     @PatchMapping("/shortlisted/{applicationId}")

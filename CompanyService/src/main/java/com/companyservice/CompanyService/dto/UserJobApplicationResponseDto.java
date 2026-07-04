@@ -5,12 +5,11 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
 @Builder
-public class AuthUserJobApplicationResponseDto {
+public class UserJobApplicationResponseDto {
     private UUID jobId;
     private String jobTitle;
     private String jobDesc;
