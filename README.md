@@ -1,3 +1,4 @@
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 # 🚀 NextHire - AI Powered Job Portal
 
 ### Frontend Repository
