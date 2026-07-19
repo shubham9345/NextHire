@@ -10,6 +10,7 @@ import java.util.UUID;
 @Getter
 @Builder
 public class UserJobApplicationResponseDto {
+    private UUID applicationId;
     private UUID jobId;
     private String jobTitle;
     private String jobDesc;

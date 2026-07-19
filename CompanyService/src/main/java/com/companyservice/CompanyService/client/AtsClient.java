@@ -3,6 +3,7 @@ package com.companyservice.CompanyService.client;
 import com.companyservice.CompanyService.dto.ATSResponseDto;
 import com.companyservice.CompanyService.utils.MultipartInputStreamFileResource;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -15,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AtsClient {
 
     private final RestTemplate restTemplate;
@@ -42,9 +44,14 @@ public class AtsClient {
                     ATSResponseDto.class
             );
 
-            return response != null ? response.getAtsScore() : null;
+            if (response == null) {
+                throw new RuntimeException("No response from ATS service");
+            }
+            return response.getAtsScore();
         } catch (Exception e) {
-            return null;
+                log.error("ATS service call failed", e);
+                throw new RuntimeException("ATS service unavailable", e);
+
         }
     }
 }

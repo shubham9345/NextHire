@@ -1,5 +1,6 @@
 package com.companyservice.CompanyService.dto;
 
+import com.companyservice.CompanyService.entity.JobType;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

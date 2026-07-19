@@ -4,6 +4,7 @@ import com.companyservice.CompanyService.dto.CreateJobRequest;
 import com.companyservice.CompanyService.dto.JobResponseDto;
 import com.companyservice.CompanyService.dto.JobSearchFilterRequest;
 import com.companyservice.CompanyService.dto.JobApplicationsRequest;
+import com.companyservice.CompanyService.entity.JobType;
 import com.companyservice.CompanyService.service.JobService;
 import com.companyservice.CompanyService.serviceImpl.JobSearchServiceImpl;
 import com.companyservice.CompanyService.serviceImpl.JobServiceImpl;
@@ -62,13 +63,13 @@ public class JobController {
     }
 
     @PatchMapping("/{jobId}/stop")
-    public JobResponseDto stopJob(
+    public ResponseEntity<String> stopJob(
             @PathVariable UUID jobId
     ) {
 
-        return jobServiceImpl.stopJob(
-                jobId
-        );
+        jobServiceImpl.stopJob(jobId);
+
+        return ResponseEntity.ok("Job stopped successfully");
     }
 
     @PatchMapping("/{jobId}/applications")

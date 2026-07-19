@@ -29,7 +29,7 @@ public class Company {
     private String website;
 
     private String industry;
-
+    @Column(length = 5000)
     private String description;
 
     private String location;

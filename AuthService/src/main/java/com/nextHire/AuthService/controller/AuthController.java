@@ -56,7 +56,7 @@ public class AuthController {
                 signupRequest.setRoles(Role.CANDIDATE);
             }
             UserInfo newUser = userInfoService.AddUser(signupRequest);
-            return new ResponseEntity<>(newUser, HttpStatus.CREATED);
+            return new ResponseEntity<>(newUser, HttpStatus.OK);
 
         } catch (Exception e) {
             e.printStackTrace();

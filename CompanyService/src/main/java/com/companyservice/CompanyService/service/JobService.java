@@ -18,7 +18,7 @@ public interface JobService {
             UUID jobId
     );
 
-    JobResponseDto stopJob(
+    void stopJob(
             UUID jobId
     );
 

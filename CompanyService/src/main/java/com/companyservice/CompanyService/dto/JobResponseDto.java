@@ -2,6 +2,7 @@ package com.companyservice.CompanyService.dto;
 
 
 import com.companyservice.CompanyService.entity.JobStatus;
+import com.companyservice.CompanyService.entity.JobType;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.elasticsearch.annotations.Field;
@@ -20,7 +21,7 @@ public class JobResponseDto {
     private UUID companyId;
 
     private String title;
-
+    private String companyName;
     private String description;
 
     private String location;

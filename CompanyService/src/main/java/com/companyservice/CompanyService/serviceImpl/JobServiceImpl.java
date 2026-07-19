@@ -93,7 +93,7 @@ public class JobServiceImpl implements JobService {
         );
     }
 
-    public JobResponseDto stopJob(
+    public void stopJob(
             UUID jobId
     ) {
 
@@ -110,8 +110,6 @@ public class JobServiceImpl implements JobService {
                 "Job stopped successfully {}",
                 jobId
         );
-
-        return mapToDto(savedJob);
     }
 
     public JobResponseDto updateAppliedCandidates(
@@ -180,6 +178,7 @@ public class JobServiceImpl implements JobService {
                 .id(job.getId())
                 .companyId(job.getCompany().getId())
                 .title(job.getTitle())
+                .companyName(job.getCompany().getCompanyName())
                 .description(job.getDescription())
                 .location(job.getLocation())
                 .jobType(job.getJobType())
@@ -201,6 +200,7 @@ public class JobServiceImpl implements JobService {
                 .id(job.getId())
                 .companyId(job.getCompany().getId())  // lazy load triggers here
                 .title(job.getTitle())
+                .companyName(job.getCompany().getCompanyName())
                 .description(job.getDescription())
                 .location(job.getLocation())
                 .jobType(job.getJobType())

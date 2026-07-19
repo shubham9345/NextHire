@@ -101,6 +101,15 @@ public class InterviewController {
 
         return ResponseEntity.ok(result);
     }
+    @GetMapping("/session-ids/{jobId}")
+    public ResponseEntity<List<UUID>> getSessionIdsByJobId(
+            @PathVariable UUID jobId) {
+
+        List<UUID> sessionIds =
+                interviewService.getAllSessionId(jobId);
+
+        return ResponseEntity.ok(sessionIds);
+    }
 
     /**
      * GET /api/interviews/history

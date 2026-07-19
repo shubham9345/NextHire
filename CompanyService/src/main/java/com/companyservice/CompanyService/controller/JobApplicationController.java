@@ -62,4 +62,12 @@ public class JobApplicationController {
 
         return ResponseEntity.ok("Candidate shortlisted successfully.");
     }
+    @PatchMapping("/withdraw/{applicationId}")
+    public ResponseEntity<String> withdrawCandidate(
+            @PathVariable UUID applicationId) {
+
+        jobApplicationServiceImpl.withdrawCandidate(applicationId);
+
+        return ResponseEntity.ok("Candidate withdraw Application successfully.");
+    }
 }

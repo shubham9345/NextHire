@@ -16,6 +16,7 @@ import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -31,20 +32,20 @@ public class JobSearchServiceImpl {
         BoolQuery.Builder boolQuery = new BoolQuery.Builder();
 
         // only show ACTIVE jobs
-//        boolQuery.filter(f -> f
-//                .term(t -> t
-//                        .field("status")
-//                        .value("ACTIVE")
-//                )
-//        );
+        boolQuery.filter(f -> f
+                .term(t -> t
+                        .field("status")
+                        .value("OPEN")
+                )
+        );
 
-        // filter by title (partial match)
+        // filter by title (partial/fuzzy match)
         if (StringUtils.hasText(filter.getTitle())) {
             boolQuery.must(m -> m
                     .match(t -> t
                             .field("title")
                             .query(filter.getTitle())
-                            .fuzziness("AUTO")   // handles typos
+                            .fuzziness("AUTO")
                     )
             );
         }
@@ -61,21 +62,22 @@ public class JobSearchServiceImpl {
 
         // filter by date range
         if (filter.getPostedFrom() != null || filter.getPostedTo() != null) {
+            DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
             boolQuery.filter(f -> f
                     .range(r -> r
                             .untyped(u -> {
                                 u.field("createdAt");
                                 if (filter.getPostedFrom() != null)
-                                    u.gte(JsonData.of(filter.getPostedFrom().toString()));
+                                    u.gte(JsonData.of(filter.getPostedFrom().format(fmt)));
                                 if (filter.getPostedTo() != null)
-                                    u.lte(JsonData.of(filter.getPostedTo().toString()));
+                                    u.lte(JsonData.of(filter.getPostedTo().format(fmt)));
                                 return u;
                             })
                     )
             );
         }
 
-        // filter by jobType
+        // filter by jobType (now a true keyword field)
         if (StringUtils.hasText(filter.getJobType())) {
             boolQuery.filter(f -> f
                     .term(t -> t
@@ -85,7 +87,7 @@ public class JobSearchServiceImpl {
             );
         }
 
-        // filter by experienceLevel
+        // filter by experienceLevel (now a true keyword field)
         if (StringUtils.hasText(filter.getExperienceLevel())) {
             boolQuery.filter(f -> f
                     .term(t -> t
@@ -125,6 +127,7 @@ public class JobSearchServiceImpl {
                 .id(UUID.fromString(doc.getId()))
                 .companyId(UUID.fromString(doc.getCompanyId()))
                 .title(doc.getTitle())
+                .companyName(doc.getCompanyName())
                 .description(doc.getDescription())
                 .location(doc.getLocation())
                 .jobType(doc.getJobType())

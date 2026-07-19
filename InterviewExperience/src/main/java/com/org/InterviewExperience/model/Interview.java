@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -29,5 +30,5 @@ public class Interview {
     private List<InterviewRound> interviewRoundList;
     private String overall_exp;
     private String mode;
-    private int userId;
+    private UUID userId;
 }

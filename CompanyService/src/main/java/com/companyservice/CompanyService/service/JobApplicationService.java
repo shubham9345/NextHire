@@ -25,4 +25,6 @@ public interface JobApplicationService {
             int size
     );
     void shortlistCandidate(UUID applicationId);
+
+    void withdrawCandidate(UUID applicationId);
 }

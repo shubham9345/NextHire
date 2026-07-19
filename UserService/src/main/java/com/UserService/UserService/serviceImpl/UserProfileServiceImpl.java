@@ -74,7 +74,7 @@ public class UserProfileServiceImpl implements UserProfileService {
                 authId
         );
     }
-    @Cacheable(value = "userProfile", key = "#authUserId")
+   // @Cacheable(value = "userProfile", key = "#authUserId")
     public UserProfile getProfile(UUID authUserId) {
 
         return repository.findByAuthUserId(authUserId)

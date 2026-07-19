@@ -128,6 +128,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
                 jobId
         );
         //  trigger ATS score calculation in background — non blocking
+        log.info("Candidate Ats score Calculation Initiation");
         atsScoreServiceImpl.calculateAndUpdateAtsScore(
                 savedApplication.getId(),
                 request.getResume(),
@@ -198,6 +199,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
                 .jobDesc(app.getJob().getDescription())
                 .appliedAt(app.getAppliedAt())
                 .applicationStatus(app.getStatus())
+                .applicationId(app.getId())
                 .atsScore(app.getAtsScore())
                 .build());
     }
@@ -209,6 +211,16 @@ public class JobApplicationServiceImpl implements JobApplicationService {
                 .orElseThrow(() -> new RuntimeException("Application not found"));
 
         application.setStatus(ApplicationStatus.SHORTLISTED);
+        jobApplicationRepository.save(application);
+        emailService.sendShortlistedEmail(application.getEmail());
+    }
+    @Transactional
+    public void withdrawCandidate(UUID applicationId) {
+
+        JobApplication application = jobApplicationRepository.findById(applicationId)
+                .orElseThrow(() -> new RuntimeException("Application not found"));
+
+        application.setStatus(ApplicationStatus.WITHDRAWN);
         jobApplicationRepository.save(application);
         emailService.sendShortlistedEmail(application.getEmail());
     }

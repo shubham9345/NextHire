@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class InterviewServiceImpl implements InterviewService {
@@ -16,7 +17,7 @@ public class InterviewServiceImpl implements InterviewService {
     private InterviewRepository interviewRepository;
 
     @Override
-    public String ShareInterviewExperience(Interview interview, int userId) {
+    public String ShareInterviewExperience(Interview interview, UUID userId) {
         if (interview == null) {
             throw new RuntimeException("interview experience body is null");
         }
@@ -56,7 +57,7 @@ public class InterviewServiceImpl implements InterviewService {
     }
 
     @Override
-    public List<Interview> AllInterviewByUserId(Long userId) {
+    public List<Interview> AllInterviewByUserId(UUID userId) {
         return interviewRepository.findInterviewByUserId(userId);
     }
     @Override

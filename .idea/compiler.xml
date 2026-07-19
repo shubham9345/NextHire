@@ -11,7 +11,7 @@
         <module name="auth-service" />
         <module name="ServiceRegistry" />
       </profile>
-      <profile name="Annotation profile for CompanyService" enabled="true">
+      <profile name="Annotation profile for UserService" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />

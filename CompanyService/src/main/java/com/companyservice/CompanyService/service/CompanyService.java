@@ -25,4 +25,8 @@ public interface CompanyService {
             UUID authUserId,
             companyProfileRequest request
     );
+
+    UUID getCompanyId(
+            UUID authId
+    );
 }

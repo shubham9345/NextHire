@@ -24,4 +24,12 @@ public interface InterviewSessionRepository extends JpaRepository<InterviewSessi
     long countActiveSessionsByUser(@Param("userId") UUID userId);
 
     List<InterviewSession> findByJobIdAndStatus(UUID jobId, InterviewEnums.SessionStatus status);
+    boolean existsByUserIdAndJobId(UUID userId, UUID jobId);
+    @Query("""
+       SELECT s.id
+       FROM InterviewSession s
+       WHERE s.jobId = :jobId
+         AND s.status = SessionStatus.COMPLETED
+       """)
+    List<UUID> findSessionIdsByJobId(@Param("jobId") UUID jobId);
 }

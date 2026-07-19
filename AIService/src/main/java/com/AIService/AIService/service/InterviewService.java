@@ -23,4 +23,6 @@ public interface InterviewService {
 
     /** Return all sessions for a user (history). */
     List<InterviewDTOs.SessionResponse> getUserSessions(UUID userId);
+
+    List<UUID> getAllSessionId(UUID jobId);
 }

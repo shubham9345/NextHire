@@ -27,12 +27,15 @@ public class JobDocument {
 
     private String description;
 
+    @Field(type = FieldType.Text)
     private String location;
 
+    @Field(type = FieldType.Keyword)
     private String jobType;
 
+    @Field(type = FieldType.Keyword)
     private String experienceLevel;
-
+    private String companyName;
     private Integer salaryMin;
 
     private Integer salaryMax;
@@ -43,7 +46,6 @@ public class JobDocument {
 
     @Field(type = FieldType.Keyword)
     private String status;
-
 
     @Field(type = FieldType.Date, format = {}, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;

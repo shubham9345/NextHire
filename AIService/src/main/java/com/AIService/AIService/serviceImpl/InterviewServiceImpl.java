@@ -44,6 +44,7 @@ public class InterviewServiceImpl implements InterviewService {
     private final NotificationService notificationService;
     private final ObjectMapper objectMapper;
     private final EmailService emailService;
+    private final InterviewSessionRepository interviewSessionRepo;
 
     @Autowired
     private final JobServiceClient jobClient;
@@ -68,9 +69,13 @@ public class InterviewServiceImpl implements InterviewService {
                             "Complete or abandon them before starting a new one.");
         }
 
-        // Fetch job and user context (via Feign; fallback stubs if downstream is down)
+        // Fetch job and user context
         InterviewDTOs.JobDetailDTO job = jobClient.getJobById(request.getJobId(), bearerToken);
         InterviewDTOs.UserProfileDTO user = userClient.getUserProfile(userId, bearerToken);
+
+        if(interviewSessionRepo.existsByUserIdAndJobId(userId, request.getJobId())) {
+            throw new IllegalStateException("You have already interview for this Job Profile");
+        }
 
         // Persist the session
         InterviewSession session = InterviewSession.builder()
@@ -299,7 +304,6 @@ public class InterviewServiceImpl implements InterviewService {
                     avgScore
             );
 
-            // Check if all evaluations are complete → generate final report
             long totalQ = questionRepo.countBySessionId(session.getId());
             long doneEvals = evalRepo.findAllBySessionId(session.getId())
                     .stream()
@@ -408,6 +412,9 @@ public class InterviewServiceImpl implements InterviewService {
                         .build())
                 .toList();
     }
+    public List<UUID> getAllSessionId(UUID jobId){
+        return interviewSessionRepo.findSessionIdsByJobId(jobId);
+    }
 
     // ─── Helpers ──────────────────────────────────────────────────────────────
 
@@ -415,9 +422,9 @@ public class InterviewServiceImpl implements InterviewService {
         InterviewSession session = sessionRepo.findById(sessionId)
                 .orElseThrow(() -> new IllegalArgumentException(
                         "Session not found: " + sessionId));
-        if (!session.getUserId().equals(userId)) {
-            throw new SecurityException("Access denied to session: " + sessionId);
-        }
+//        if (!session.getUserId().equals(userId)) {
+//            throw new SecurityException("Access denied to session: " + sessionId);
+//        }
         return session;
     }
 

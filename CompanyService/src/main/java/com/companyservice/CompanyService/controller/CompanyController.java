@@ -68,4 +68,8 @@ public class CompanyController {
                 authId
         );
     }
+    @GetMapping("/companyId/{authId}")
+    public UUID getCompanyId(@PathVariable UUID authId) {
+        return companyServiceImpl.getCompanyId(authId);
+    }
 }

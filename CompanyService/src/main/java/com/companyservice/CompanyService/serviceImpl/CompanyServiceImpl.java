@@ -141,6 +141,12 @@ public class CompanyServiceImpl implements CompanyService {
                 );
     }
 
+    public UUID getCompanyId(
+            UUID authId
+    ) {
+        return companyRepository.getIdByAuthUserId(authId);
+    }
+
     public CompanyResponseDto updateProfile(UUID authUserId, companyProfileRequest request) {
         Company company = companyRepository.findByAuthUserIdAndDeletedFalse(authUserId)
                 .orElseThrow(() -> new RuntimeException("Company not found"));

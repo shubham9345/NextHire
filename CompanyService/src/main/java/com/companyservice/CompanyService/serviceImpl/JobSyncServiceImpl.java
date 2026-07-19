@@ -21,6 +21,7 @@ public class JobSyncServiceImpl {
         JobDocument doc = JobDocument.builder()
                 .id(job.getId().toString())
                 .companyId(job.getCompany().getId().toString())
+                .companyName(job.getCompany().getCompanyName())
                 .title(job.getTitle())
                 .description(job.getDescription())
                 .location(job.getLocation())

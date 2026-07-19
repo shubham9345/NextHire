@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/interview")
@@ -16,7 +17,7 @@ public class InterviewController {
     private InterviewServiceImpl interviewService;
 
     @PostMapping("/share/{userId}")
-    public String shareInterview(@RequestBody Interview interview, @PathVariable int userId) {
+    public String shareInterview(@RequestBody Interview interview, @PathVariable UUID userId) {
         return interviewService.ShareInterviewExperience(interview, userId);
     }
 
@@ -27,7 +28,7 @@ public class InterviewController {
     }
 
     @GetMapping("/all-interview/{userId}")
-    public ResponseEntity<List<Interview>> allInterviewByUserId(@PathVariable Long userId) {
+    public ResponseEntity<List<Interview>> allInterviewByUserId(@PathVariable UUID userId) {
         List<Interview> interviewList = interviewService.AllInterviewByUserId(userId);
         return new ResponseEntity<>(interviewList, HttpStatus.OK);
     }
